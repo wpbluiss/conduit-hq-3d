@@ -1,0 +1,50 @@
+{
+  "generated_by": "HUNTER",
+  "generated_at": "2026-03-24",
+  "search_area": "West Palm Beach, FL",
+  "target_vertical": "nail salons and beauty businesses",
+  "pain_point": "missed calls, voicemail, no callback",
+  "research_notes": "Extensive web searches were conducted across Google, Yelp, BBB, TripAdvisor, Booksy, Wheree, SalonCloudsPlus, Wanderlog, and BestProsInTown. Review platforms limit indexing of individual review text, making exact phone-complaint quotes difficult to surface via search. The prospects below are real businesses with documented communication, scheduling, or appointment management complaints sourced from aggregated review data. These pain points indicate businesses that would benefit from automated call handling and AI receptionist solutions.",
+  "prospects": [
+    {
+      "name": "Avalon Nails & Spa",
+      "address": "1855 Palm Beach Lakes Blvd, Unit B03, West Palm Beach, FL 33401",
+      "phone": "(561) 684-7777",
+      "google_rating": 4.4,
+      "review_complaint": "Multiple reviewers report long wait times and service inconsistency. Customers describe being moved between stations without notice and technicians being on their phones during service. With 327+ Yelp reviews and high foot traffic, the salon shows signs of being overwhelmed with demand -- a strong indicator of missed calls during peak hours. One reviewer noted waiting over an hour without acknowledgment.",
+      "source": "Yelp, Booksy, Facebook (68% recommendation rate on 226 Facebook reviews suggests communication gaps)"
+    },
+    {
+      "name": "Happy Nails",
+      "address": "4603 Okeechobee Blvd, Suite 116, West Palm Beach, FL 33417",
+      "phone": "(561) 242-3648",
+      "google_rating": 3.5,
+      "review_complaint": "Low 3.5-star Yelp rating with only 18 reviews indicates poor customer retention. Reviewers report being shuffled between multiple staff mid-service and being charged despite unfinished work. The salon primarily accommodates walk-ins rather than phone appointments, suggesting phone management is not a priority. Customer reported: 'nails were a mess, staff kept switching them between different people.'",
+      "source": "Yelp, Yellow Pages, CMac.ws"
+    },
+    {
+      "name": "Noire Nail and Lash Bar",
+      "address": "1741 Palm Beach Lakes Blvd, Unit E213, West Palm Beach, FL 33401",
+      "phone": "(561) 812-3792",
+      "google_rating": 4.5,
+      "review_complaint": "Customer reported not being notified about delays, sitting at the manicure table waiting while other customers were being serviced ahead of them. The manager only offered an apology without resolution. Not BBB accredited. Scheduling and communication gaps are evident from reviews describing clients arriving for appointments only to find their slot was not properly held.",
+      "source": "BBB, Yelp (88 reviews), Wheree, Nextdoor"
+    },
+    {
+      "name": "Anushka Spa Salon & Cosmedical Centre",
+      "address": "701 S Rosemary Ave, Suite 200, West Palm Beach, FL 33401",
+      "phone": "(561) 820-0500",
+      "google_rating": 4.7,
+      "review_complaint": "Multiple scheduling and communication complaints documented: (1) Customer reported 'I do not receive an appointment reminder until the day of - which at that point it is impossible to make changes to my schedule and I am charged the 50% cancellation fee.' (2) Receptionist could not find customer's name on the appointment list despite same-day booking. (3) Customer reported a 45-minute wait that caused them to miss another event. (4) Customer was asked to pay $600-800 upfront before booking, described as unreasonable.",
+      "source": "SalonCloudsPlus (1517 reviews), Wanderlog, Yelp (143 reviews), TripAdvisor"
+    },
+    {
+      "name": "Palm Beach Hair Co.",
+      "address": "2250 Palm Beach Lakes Blvd, Suite 100, West Palm Beach, FL 33409",
+      "phone": "Not listed publicly (booking via website palmbeachhair.co or email PalmBeachHairCo@gmail.com)",
+      "google_rating": 4.8,
+      "review_complaint": "The salon's own booking system enforces a 2-hour minimum lead time and explicitly states that if you cannot find available appointment slots for same-day service, you should 'call to book on the phone' -- indicating phone-based booking is a critical channel. With 104 Google reviews and 71 Yelp reviews, volume is significant. A documented complaint describes a $500+ appointment resulting in severe hair damage with the owner described as 'completely cold and uncaring, refusing to make any resolution' -- indicating poor post-service communication and follow-up.",
+      "source": "Yelp (71 reviews), BestProsInTown (104 reviews), Booksy, Vagaro"
+    }
+  ]
+}

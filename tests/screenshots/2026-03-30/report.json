@@ -1,0 +1,834 @@
+{
+  "date": "2026-03-30",
+  "url": "http://localhost:3000",
+  "timestamp": "2026-03-30T05:07:39.893Z",
+  "views": [
+    {
+      "name": "01-exterior-wide",
+      "camera": {
+        "position": {
+          "x": 40,
+          "y": 20,
+          "z": 55
+        },
+        "target": {
+          "x": 0,
+          "y": 10,
+          "z": 0
+        }
+      },
+      "metrics": {
+        "fps": 27,
+        "triangles": 338317,
+        "drawCalls": 290,
+        "textures": 77,
+        "geometries": 2465
+      },
+      "screenshot": "01-exterior-wide.png",
+      "status": "OK"
+    },
+    {
+      "name": "02-exterior-entrance",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 4,
+          "z": 25
+        },
+        "target": {
+          "x": 0,
+          "y": 4,
+          "z": 0
+        }
+      },
+      "metrics": {
+        "fps": 18,
+        "triangles": 288162,
+        "drawCalls": 451,
+        "textures": 77,
+        "geometries": 2466
+      },
+      "screenshot": "02-exterior-entrance.png",
+      "status": "WARN"
+    },
+    {
+      "name": "03-exterior-behind",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 15,
+          "z": -50
+        },
+        "target": {
+          "x": 0,
+          "y": 10,
+          "z": 0
+        }
+      },
+      "metrics": {
+        "fps": 27,
+        "triangles": 337915,
+        "drawCalls": 648,
+        "textures": 77,
+        "geometries": 2486
+      },
+      "screenshot": "03-exterior-behind.png",
+      "status": "OK"
+    },
+    {
+      "name": "04-exterior-street-level",
+      "camera": {
+        "position": {
+          "x": 20,
+          "y": 2,
+          "z": 30
+        },
+        "target": {
+          "x": 0,
+          "y": 25,
+          "z": 0
+        }
+      },
+      "metrics": {
+        "fps": 25,
+        "triangles": 200816,
+        "drawCalls": 839,
+        "textures": 77,
+        "geometries": 2494
+      },
+      "screenshot": "04-exterior-street-level.png",
+      "status": "OK"
+    },
+    {
+      "name": "05-exterior-corner",
+      "camera": {
+        "position": {
+          "x": 35,
+          "y": 12,
+          "z": -30
+        },
+        "target": {
+          "x": 0,
+          "y": 10,
+          "z": 0
+        }
+      },
+      "metrics": {
+        "fps": 26,
+        "triangles": 337927,
+        "drawCalls": 1039,
+        "textures": 77,
+        "geometries": 2496
+      },
+      "screenshot": "05-exterior-corner.png",
+      "status": "OK"
+    },
+    {
+      "name": "06-lobby-overview",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 3,
+          "z": 6
+        },
+        "target": {
+          "x": 0,
+          "y": 2,
+          "z": -10
+        }
+      },
+      "metrics": {
+        "fps": 29,
+        "triangles": 185942,
+        "drawCalls": 1251,
+        "textures": 77,
+        "geometries": 2496
+      },
+      "screenshot": "06-lobby-overview.png",
+      "status": "OK"
+    },
+    {
+      "name": "07-lobby-from-elevator",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 3,
+          "z": -6
+        },
+        "target": {
+          "x": 0,
+          "y": 3,
+          "z": 8
+        }
+      },
+      "metrics": {
+        "fps": 29,
+        "triangles": 315241,
+        "drawCalls": 1463,
+        "textures": 78,
+        "geometries": 2496
+      },
+      "screenshot": "07-lobby-from-elevator.png",
+      "status": "OK"
+    },
+    {
+      "name": "08-lobby-reception-closeup",
+      "camera": {
+        "position": {
+          "x": -1.5,
+          "y": 1.8,
+          "z": -1
+        },
+        "target": {
+          "x": 0.8,
+          "y": 1.2,
+          "z": -2.8
+        }
+      },
+      "metrics": {
+        "fps": 28,
+        "triangles": 173272,
+        "drawCalls": 1669,
+        "textures": 78,
+        "geometries": 2505
+      },
+      "screenshot": "08-lobby-reception-closeup.png",
+      "status": "OK"
+    },
+    {
+      "name": "09-lobby-right-side",
+      "camera": {
+        "position": {
+          "x": 6,
+          "y": 2.5,
+          "z": 2
+        },
+        "target": {
+          "x": 9,
+          "y": 1.5,
+          "z": -2
+        }
+      },
+      "metrics": {
+        "fps": 26,
+        "triangles": 170582,
+        "drawCalls": 1872,
+        "textures": 77,
+        "geometries": 2505
+      },
+      "screenshot": "09-lobby-right-side.png",
+      "status": "OK"
+    },
+    {
+      "name": "10-lobby-ceiling-up",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 1.5,
+          "z": 0
+        },
+        "target": {
+          "x": 0,
+          "y": 8,
+          "z": 0
+        }
+      },
+      "metrics": {
+        "fps": 40,
+        "triangles": 169014,
+        "drawCalls": 2138,
+        "textures": 77,
+        "geometries": 2505
+      },
+      "screenshot": "10-lobby-ceiling-up.png",
+      "status": "OK"
+    },
+    {
+      "name": "11-lobby-elevator-closeup",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 3,
+          "z": -4
+        },
+        "target": {
+          "x": 0,
+          "y": 3,
+          "z": -10
+        }
+      },
+      "metrics": {
+        "fps": 26,
+        "triangles": 164154,
+        "drawCalls": 2332,
+        "textures": 77,
+        "geometries": 2505
+      },
+      "screenshot": "11-lobby-elevator-closeup.png",
+      "status": "OK"
+    },
+    {
+      "name": "12-receptionist-closeup",
+      "camera": {
+        "position": {
+          "x": -1.5,
+          "y": 1.5,
+          "z": -1.5
+        },
+        "target": {
+          "x": 0.8,
+          "y": 1.5,
+          "z": -2.8
+        }
+      },
+      "metrics": {
+        "fps": 28,
+        "triangles": 173434,
+        "drawCalls": 2541,
+        "textures": 77,
+        "geometries": 2508
+      },
+      "screenshot": "12-receptionist-closeup.png",
+      "status": "OK"
+    },
+    {
+      "name": "13-floor2-sales-front",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 52.5,
+          "z": 7
+        },
+        "target": {
+          "x": 0,
+          "y": 52,
+          "z": -5
+        }
+      },
+      "metrics": {
+        "fps": 60,
+        "triangles": 63812,
+        "drawCalls": 3677,
+        "textures": 94,
+        "geometries": 2717
+      },
+      "screenshot": "13-floor2-sales-front.png",
+      "status": "OK"
+    },
+    {
+      "name": "14-floor2-sales-rear",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 52.5,
+          "z": -6
+        },
+        "target": {
+          "x": 0,
+          "y": 52,
+          "z": 5
+        }
+      },
+      "metrics": {
+        "fps": 60,
+        "triangles": 63704,
+        "drawCalls": 4858,
+        "textures": 100,
+        "geometries": 2817
+      },
+      "screenshot": "14-floor2-sales-rear.png",
+      "status": "OK"
+    },
+    {
+      "name": "15-floor3-marketing-front",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 102.5,
+          "z": 7
+        },
+        "target": {
+          "x": 0,
+          "y": 102,
+          "z": -5
+        }
+      },
+      "metrics": {
+        "fps": 60,
+        "triangles": 65406,
+        "drawCalls": 6045,
+        "textures": 119,
+        "geometries": 3128
+      },
+      "screenshot": "15-floor3-marketing-front.png",
+      "status": "OK"
+    },
+    {
+      "name": "16-floor3-marketing-rear",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 102.5,
+          "z": -6
+        },
+        "target": {
+          "x": 0,
+          "y": 102,
+          "z": 5
+        }
+      },
+      "metrics": {
+        "fps": 60,
+        "triangles": 63158,
+        "drawCalls": 7244,
+        "textures": 124,
+        "geometries": 3223
+      },
+      "screenshot": "16-floor3-marketing-rear.png",
+      "status": "OK"
+    },
+    {
+      "name": "17-floor4-engineering-front",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 152.5,
+          "z": 7
+        },
+        "target": {
+          "x": 0,
+          "y": 152,
+          "z": -5
+        }
+      },
+      "metrics": {
+        "fps": 60,
+        "triangles": 64244,
+        "drawCalls": 8440,
+        "textures": 141,
+        "geometries": 3499
+      },
+      "screenshot": "17-floor4-engineering-front.png",
+      "status": "OK"
+    },
+    {
+      "name": "18-floor4-engineering-rear",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 152.5,
+          "z": -6
+        },
+        "target": {
+          "x": 0,
+          "y": 152,
+          "z": 5
+        }
+      },
+      "metrics": {
+        "fps": 60,
+        "triangles": 61666,
+        "drawCalls": 9639,
+        "textures": 146,
+        "geometries": 3594
+      },
+      "screenshot": "18-floor4-engineering-rear.png",
+      "status": "OK"
+    },
+    {
+      "name": "19-floor5-content-front",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 202.5,
+          "z": 7
+        },
+        "target": {
+          "x": 0,
+          "y": 202,
+          "z": -5
+        }
+      },
+      "metrics": {
+        "fps": 61,
+        "triangles": 65266,
+        "drawCalls": 10826,
+        "textures": 166,
+        "geometries": 3878
+      },
+      "screenshot": "19-floor5-content-front.png",
+      "status": "OK"
+    },
+    {
+      "name": "20-floor5-content-rear",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 202.5,
+          "z": -6
+        },
+        "target": {
+          "x": 0,
+          "y": 202,
+          "z": 5
+        }
+      },
+      "metrics": {
+        "fps": 60,
+        "triangles": 63604,
+        "drawCalls": 12025,
+        "textures": 171,
+        "geometries": 3983
+      },
+      "screenshot": "20-floor5-content-rear.png",
+      "status": "OK"
+    },
+    {
+      "name": "21-floor6-intel-front",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 252.5,
+          "z": 7
+        },
+        "target": {
+          "x": 0,
+          "y": 252,
+          "z": -5
+        }
+      },
+      "metrics": {
+        "fps": 60,
+        "triangles": 67600,
+        "drawCalls": 13221,
+        "textures": 194,
+        "geometries": 4398
+      },
+      "screenshot": "21-floor6-intel-front.png",
+      "status": "OK"
+    },
+    {
+      "name": "22-floor6-intel-rear",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 252.5,
+          "z": -6
+        },
+        "target": {
+          "x": 0,
+          "y": 252,
+          "z": 5
+        }
+      },
+      "metrics": {
+        "fps": 60,
+        "triangles": 66782,
+        "drawCalls": 14429,
+        "textures": 198,
+        "geometries": 4437
+      },
+      "screenshot": "22-floor6-intel-rear.png",
+      "status": "OK"
+    },
+    {
+      "name": "23-floor7-ops-front",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 302.5,
+          "z": 7
+        },
+        "target": {
+          "x": 0,
+          "y": 302,
+          "z": -5
+        }
+      },
+      "metrics": {
+        "fps": 60,
+        "triangles": 65546,
+        "drawCalls": 15634,
+        "textures": 219,
+        "geometries": 4744
+      },
+      "screenshot": "23-floor7-ops-front.png",
+      "status": "OK"
+    },
+    {
+      "name": "24-floor7-ops-rear",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 302.5,
+          "z": -6
+        },
+        "target": {
+          "x": 0,
+          "y": 302,
+          "z": 5
+        }
+      },
+      "metrics": {
+        "fps": 60,
+        "triangles": 63164,
+        "drawCalls": 16833,
+        "textures": 226,
+        "geometries": 4841
+      },
+      "screenshot": "24-floor7-ops-rear.png",
+      "status": "OK"
+    },
+    {
+      "name": "25-floor8-monitor-front",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 352.5,
+          "z": 7
+        },
+        "target": {
+          "x": 0,
+          "y": 352,
+          "z": -5
+        }
+      },
+      "metrics": {
+        "fps": 60,
+        "triangles": 63512,
+        "drawCalls": 18038,
+        "textures": 247,
+        "geometries": 5084
+      },
+      "screenshot": "25-floor8-monitor-front.png",
+      "status": "OK"
+    },
+    {
+      "name": "26-floor8-monitor-rear",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 352.5,
+          "z": -6
+        },
+        "target": {
+          "x": 0,
+          "y": 352,
+          "z": 5
+        }
+      },
+      "metrics": {
+        "fps": 60,
+        "triangles": 62022,
+        "drawCalls": 19237,
+        "textures": 250,
+        "geometries": 5137
+      },
+      "screenshot": "26-floor8-monitor-rear.png",
+      "status": "OK"
+    },
+    {
+      "name": "27-ceo-suite-front",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 402.5,
+          "z": 7
+        },
+        "target": {
+          "x": 0,
+          "y": 402,
+          "z": -5
+        }
+      },
+      "metrics": {
+        "fps": 60,
+        "triangles": 67042,
+        "drawCalls": 20424,
+        "textures": 266,
+        "geometries": 5285
+      },
+      "screenshot": "27-ceo-suite-front.png",
+      "status": "OK"
+    },
+    {
+      "name": "28-ceo-desk-closeup",
+      "camera": {
+        "position": {
+          "x": -2,
+          "y": 401.5,
+          "z": -1
+        },
+        "target": {
+          "x": 0,
+          "y": 401,
+          "z": -3
+        }
+      },
+      "metrics": {
+        "fps": 60,
+        "triangles": 65994,
+        "drawCalls": 21641,
+        "textures": 266,
+        "geometries": 5285
+      },
+      "screenshot": "28-ceo-desk-closeup.png",
+      "status": "OK"
+    },
+    {
+      "name": "29-ceo-window-outward",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 402,
+          "z": -6
+        },
+        "target": {
+          "x": 0,
+          "y": 402,
+          "z": 8
+        }
+      },
+      "metrics": {
+        "fps": 60,
+        "triangles": 67010,
+        "drawCalls": 22867,
+        "textures": 268,
+        "geometries": 5330
+      },
+      "screenshot": "29-ceo-window-outward.png",
+      "status": "OK"
+    },
+    {
+      "name": "30-ceo-suite-rear",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 402.5,
+          "z": -6
+        },
+        "target": {
+          "x": 0,
+          "y": 402,
+          "z": 5
+        }
+      },
+      "metrics": {
+        "fps": 60,
+        "triangles": 66992,
+        "drawCalls": 24075,
+        "textures": 268,
+        "geometries": 5330
+      },
+      "screenshot": "30-ceo-suite-rear.png",
+      "status": "OK"
+    },
+    {
+      "name": "31-inside-elevator",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 2,
+          "z": -7.8
+        },
+        "target": {
+          "x": 0,
+          "y": 2,
+          "z": 0
+        }
+      },
+      "metrics": {
+        "fps": 27,
+        "triangles": 315841,
+        "drawCalls": 24347,
+        "textures": 268,
+        "geometries": 5330
+      },
+      "screenshot": "31-inside-elevator.png",
+      "status": "OK"
+    },
+    {
+      "name": "32-ceiling-fan-closeup",
+      "camera": {
+        "position": {
+          "x": -3,
+          "y": 52.2,
+          "z": 0
+        },
+        "target": {
+          "x": -3,
+          "y": 53.94,
+          "z": -2
+        }
+      },
+      "metrics": {
+        "fps": 60,
+        "triangles": 57870,
+        "drawCalls": 25444,
+        "textures": 268,
+        "geometries": 5330
+      },
+      "screenshot": "32-ceiling-fan-closeup.png",
+      "status": "OK"
+    },
+    {
+      "name": "33-elevator-to-floor",
+      "camera": {
+        "position": {
+          "x": 0,
+          "y": 52,
+          "z": -7
+        },
+        "target": {
+          "x": 0,
+          "y": 52,
+          "z": 5
+        }
+      },
+      "metrics": {
+        "fps": 60,
+        "triangles": 63916,
+        "drawCalls": 26598,
+        "textures": 269,
+        "geometries": 5331
+      },
+      "screenshot": "33-elevator-to-floor.png",
+      "status": "OK"
+    },
+    {
+      "name": "34-exterior-dusk",
+      "camera": {
+        "position": {
+          "x": -35,
+          "y": 15,
+          "z": 50
+        },
+        "target": {
+          "x": 0,
+          "y": 8,
+          "z": 0
+        }
+      },
+      "metrics": {
+        "fps": 26,
+        "triangles": 338143,
+        "drawCalls": 26864,
+        "textures": 269,
+        "geometries": 5334
+      },
+      "screenshot": "34-exterior-dusk.png",
+      "status": "OK"
+    }
+  ],
+  "warnings": [
+    "02-exterior-entrance: 18 FPS (below 24 threshold)"
+  ],
+  "summary": {
+    "totalViews": 34,
+    "avgFPS": 47,
+    "minFPS": 18,
+    "maxFPS": 61,
+    "warningCount": 1,
+    "noDataCount": 0
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "generated_by": "WATCHDOG",
+  "generated_at": "2026-03-24T20:42:34Z",
+  "checks": [
+    {
+      "service": "Railway Backend",
+      "url": "https://conduit-backend-production.up.railway.app/health",
+      "status": "healthy",
+      "http_status": 200,
+      "response_body": "{\"ok\":true}",
+      "response_time_seconds": 0.321,
+      "checked_at": "2026-03-24T20:42:30Z"
+    },
+    {
+      "service": "Supabase",
+      "url": "https://mvuslmfjkkuizixjpkgl.supabase.co",
+      "status": "healthy",
+      "http_status": 404,
+      "response_body": "{\"error\":\"requested path is invalid\"}",
+      "response_time_seconds": 0.046,
+      "checked_at": "2026-03-24T20:42:30Z",
+      "notes": "Root path returns 404 with error message, but the Supabase instance is reachable and responding. This is expected behavior for Supabase projects when hitting the root URL without a valid API path."
+    },
+    {
+      "service": "Vapi",
+      "url": "https://vapi.ai",
+      "status": "healthy",
+      "http_status": 200,
+      "response_time_seconds": 0.342,
+      "checked_at": "2026-03-24T20:42:30Z"
+    }
+  ],
+  "overall_status": "all_healthy"
+}
