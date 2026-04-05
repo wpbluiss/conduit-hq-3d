@@ -45,6 +45,9 @@ import { createCeoDashboard } from './ui/ceoDashboard.js';
 import { createMinimap } from './ui/minimap.js';
 import { createVoiceMic } from './ui/voiceMic.js';
 import { createFloorTitle, FLOOR_DISPLAY } from './ui/floorTitle.js';
+import { createBoardMeeting } from './ui/boardMeeting.js';
+import { createNotifications } from './ui/notifications.js';
+import { createCompanyDashboard } from './ui/companyDashboard.js';
 // Bloom PP disabled — MRT incompatible with three.js r183 WebGPU
 // import { createPostProcessing } from './scene/postprocessing.js';
 
@@ -317,6 +320,27 @@ async function init() {
   const minimap = createMinimap(player);
   const voiceMic = createVoiceMic();
   const floorTitle = createFloorTitle();
+  const boardMeeting = createBoardMeeting(ceoResult.group);
+  const notifications = createNotifications();
+
+  // --- Company Dashboard Screens ---
+  const dashboards = [];
+  // Lobby dashboard — back wall, facing +Z
+  {
+    const lobbyDash = createCompanyDashboard(0, 5.5, -6.5, 0, 1);
+    lobbyInteriorGroup.add(lobbyDash.mesh);
+    lobbyInteriorGroup.add(lobbyDash.bezel);
+    lobbyInteriorGroup.add(lobbyDash.glow);
+    dashboards.push(lobbyDash);
+  }
+  // CEO Suite dashboard — side wall
+  {
+    const ceoDash = createCompanyDashboard(-8, 402.5, 0, Math.PI / 2, 1);
+    ceoResult.group.add(ceoDash.mesh);
+    ceoResult.group.add(ceoDash.bezel);
+    ceoResult.group.add(ceoDash.glow);
+    dashboards.push(ceoDash);
+  }
 
   // --- Floor visibility culling ---
   // Start with upper floors hidden (player begins in lobby)
@@ -595,6 +619,29 @@ async function init() {
     },
   });
 
+  // --- Board room proximity zone (CEO Suite) ---
+  let nearBoardRoom = false;
+  proximity.addZone({
+    position: new THREE.Vector3(6, 400, 4),
+    radius: 3.0,
+    id: 'board-room',
+    yTolerance: 3,
+    onEnter: () => {
+      nearBoardRoom = true;
+      if (!elevator.isNearElevator()) {
+        promptOverlay.show(boardMeeting.isActive()
+          ? 'Press B to end Board Meeting'
+          : 'Press B to start Board Meeting');
+      }
+    },
+    onExit: () => {
+      nearBoardRoom = false;
+      if (!elevator.isNearElevator()) {
+        promptOverlay.hide();
+      }
+    },
+  });
+
   // --- E key handler for agents and CEO desk (when NOT near elevator) ---
   elevator.onEKey(() => {
     // This fires when E is pressed but NOT near elevator
@@ -653,6 +700,16 @@ async function init() {
       } else if (nearJarvis) {
         voiceMic.show();
         promptOverlay.hide();
+      }
+    }
+    // B key for board meeting (near board room on CEO floor)
+    if (e.code === 'KeyB') {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (nearBoardRoom && currentFloorY === 400) {
+        boardMeeting.toggle();
+        promptOverlay.show(boardMeeting.isActive()
+          ? 'Press B to end Board Meeting'
+          : 'Press B to start Board Meeting');
       }
     }
     // Escape closes voice mic
@@ -803,6 +860,17 @@ async function init() {
 
     if (signMat && exteriorGroup.visible) {
       signMat.emissiveIntensity = 0.5 + 1.5 * (0.5 + 0.5 * Math.sin(elapsedTime * 1.2));
+    }
+
+    // Board meeting animation (CEO floor only)
+    boardMeeting.update(elapsedTime);
+
+    // Notification toasts
+    notifications.update(elapsedTime);
+
+    // Company dashboards (update only when parent group visible)
+    for (const dash of dashboards) {
+      dash.update(elapsedTime);
     }
 
     // Render (bloom PP disabled — MRT incompatibility with WebGPU r183)
