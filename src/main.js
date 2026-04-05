@@ -43,6 +43,8 @@ import { initAmbientAudio, setAudioFloor } from './audio/ambientAudio.js';
 import { createAgentCard } from './ui/agentCard.js';
 import { createCeoDashboard } from './ui/ceoDashboard.js';
 import { createMinimap } from './ui/minimap.js';
+import { createVoiceMic } from './ui/voiceMic.js';
+import { createFloorTitle, FLOOR_DISPLAY } from './ui/floorTitle.js';
 // Bloom PP disabled — MRT incompatible with three.js r183 WebGPU
 // import { createPostProcessing } from './scene/postprocessing.js';
 
@@ -291,6 +293,7 @@ async function init() {
       agentPositions: result.agentPositions || [],
       agents: dept.agents || [],
       deptName: dept.name, accentHex,
+      walkingNpcs: result.walkingNpcs || [],
     });
     setProgress(90 + Math.floor((di + 1) / factoryDepts.length * 5));
   }
@@ -308,10 +311,12 @@ async function init() {
   createHUD();
   const activityFeed = createActivityFeed();
 
-  // Stage 6: Agent card, CEO dashboard, minimap
+  // Stage 6: Agent card, CEO dashboard, minimap, voice mic, floor title
   const agentCard = createAgentCard();
   const ceoDashboard = createCeoDashboard();
   const minimap = createMinimap(player);
+  const voiceMic = createVoiceMic();
+  const floorTitle = createFloorTitle();
 
   // --- Floor visibility culling ---
   // Start with upper floors hidden (player begins in lobby)
@@ -427,6 +432,12 @@ async function init() {
 
     // Switch ambient audio to new floor
     setAudioFloor(floorY);
+
+    // Show cinematic floor title on arrival (skip lobby — player starts there)
+    const floorDisplay = FLOOR_DISPLAY[floorY];
+    if (floorDisplay && floorY > 0) {
+      floorTitle.show(floorDisplay.floor, floorDisplay.department, floorDisplay.accent);
+    }
   }
 
   elevator.onFloorChange(switchToFloor);
@@ -454,7 +465,7 @@ async function init() {
   function updateMinimapForFloor(floorY) {
     const floorData = floorMap.get(floorY);
     if (!floorData) {
-      minimap.setFloorData([], []);
+      minimap.setFloorData([], [], []);
       return;
     }
     const agents = [];
@@ -468,7 +479,7 @@ async function init() {
         desks.push({ x: ap.x, z: ap.z, w: 2.2, d: 1.2 });
       }
     }
-    minimap.setFloorData(agents, desks);
+    minimap.setFloorData(agents, desks, floorData.walkingNpcs || []);
   }
 
   // --- Proximity zones ---
@@ -614,7 +625,7 @@ async function init() {
     onEnter: () => {
       nearJarvis = true;
       if (!jarvisChat.isOpen()) {
-        promptOverlay.show('Press J to talk to JARVIS');
+        promptOverlay.show('Press J to chat with JARVIS  |  Press V to talk');
       }
     },
     onExit: () => {
@@ -630,8 +641,22 @@ async function init() {
       if (jarvisChat.isOpen()) {
         promptOverlay.hide();
       } else if (nearJarvis) {
-        promptOverlay.show('Press J to talk to JARVIS');
+        promptOverlay.show('Press J to chat with JARVIS  |  Press V to talk');
       }
+    }
+    // V key for voice interaction (near JARVIS)
+    if (e.code === 'KeyV') {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (voiceMic.isOpen()) {
+        voiceMic.hide();
+      } else if (nearJarvis) {
+        voiceMic.show();
+        promptOverlay.hide();
+      }
+    }
+    // Escape closes voice mic
+    if (e.code === 'Escape' && voiceMic.isOpen()) {
+      voiceMic.hide();
     }
   });
 

@@ -36,6 +36,7 @@ export function createMinimap(player) {
   let visible = false;
   let agentDots = [];
   let deskRects = [];
+  let walkingNpcRefs = []; // array of { group } with live position
   let updateTimer = null;
 
   function worldToMap(wx, wz) {
@@ -73,6 +74,17 @@ export function createMinimap(player) {
       ctx.beginPath();
       ctx.arc(ax, az, 3, 0, Math.PI * 2);
       ctx.fill();
+    }
+
+    // Walking NPC dots (moving, smaller, cyan)
+    ctx.fillStyle = '#06b6d4';
+    for (const npc of walkingNpcRefs) {
+      if (npc.group) {
+        const [nx, nz] = worldToMap(npc.group.position.x, npc.group.position.z);
+        ctx.beginPath();
+        ctx.arc(nx, nz, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
 
     // Player dot
@@ -119,9 +131,10 @@ export function createMinimap(player) {
     }
   });
 
-  function setFloorData(agents, desks) {
+  function setFloorData(agents, desks, walkingNpcs) {
     agentDots = agents || [];
     deskRects = desks || [];
+    walkingNpcRefs = walkingNpcs || [];
     if (visible) draw();
   }
 

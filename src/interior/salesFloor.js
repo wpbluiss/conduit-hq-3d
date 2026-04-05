@@ -5,6 +5,7 @@ import { initAgentAnimation, captureModelBase, updateAgentAnimation } from '../n
 import { createAgentModel } from '../npc/agentModel.js';
 import { createCharacterInstance, isCharacterModelAvailable } from '../npc/characterLoader.js';
 import { createWalkingNpcs, updateWalkingNpcs } from '../npc/walkingNpc.js';
+import { createSpeechBubbles } from '../npc/speechBubble.js';
 
 const FLOOR_Y = 50;
 const FLOOR_W = LOBBY.width;
@@ -25,6 +26,7 @@ const screenCanvases = [];
 const screenTextures = [];
 let screenTimer = 0;
 let salesWalkingNpcs = [];
+let salesSpeechBubbles = null;
 
 // Sales-specific screen content per agent (512x256 canvas)
 function rV(base, pct = 10) { return base + base * (Math.random() * 2 - 1) * pct / 100; }
@@ -119,6 +121,8 @@ export function updateSalesFloor(time, playerPos) {
   }
   // Walking NPCs
   updateWalkingNpcs(salesWalkingNpcs, animDelta, time);
+  // Speech bubbles
+  if (salesSpeechBubbles) salesSpeechBubbles.update(time);
 }
 
 // ---- Wall clock ----
@@ -1014,6 +1018,7 @@ export async function createSalesFloor(scene) {
 
   // --- Walking NPCs (2 on sales floor) ---
   salesWalkingNpcs = createWalkingNpcs(group, FLOOR_Y, 2, 0x3b82f6);
+  salesSpeechBubbles = createSpeechBubbles(npcGroups, 'Sales');
 
   scene.add(group);
 

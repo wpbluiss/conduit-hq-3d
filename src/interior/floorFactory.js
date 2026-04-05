@@ -5,6 +5,7 @@ import { initAgentAnimation, captureModelBase, updateAgentAnimation } from '../n
 import { createAgentModel } from '../npc/agentModel.js';
 import { createCharacterInstance, isCharacterModelAvailable } from '../npc/characterLoader.js';
 import { createWalkingNpcs, updateWalkingNpcs } from '../npc/walkingNpc.js';
+import { createSpeechBubbles } from '../npc/speechBubble.js';
 
 const FLOOR_W = LOBBY.width;
 const FLOOR_D = LOBBY.depth;
@@ -1349,6 +1350,9 @@ export async function createDepartmentFloor(scene, config) {
   // --- Walking NPCs (2 per floor) ---
   const walkingNpcs = createWalkingNpcs(group, floorY, 2, accentColor);
 
+  // --- Speech Bubbles ---
+  const speechBubbles = createSpeechBubbles(npcModels, name);
+
   scene.add(group);
 
   // --- Update functions ---
@@ -1378,6 +1382,8 @@ export async function createDepartmentFloor(scene, config) {
     const animDelta = Math.min(dt, 0.1); // clamp to avoid large jumps
     // Walking NPCs
     updateWalkingNpcs(walkingNpcs, animDelta, time);
+    // Speech bubbles
+    speechBubbles.update(time);
     for (const g of npcModels) {
       updateAgentAnimation(g, time, animDelta, playerPos);
     }
@@ -1437,7 +1443,7 @@ export async function createDepartmentFloor(scene, config) {
     }
   }
 
-  return { group, mixers, updateFloor, agentPositions };
+  return { group, mixers, updateFloor, agentPositions, walkingNpcs };
 }
 
 // ---- Helpers ----
