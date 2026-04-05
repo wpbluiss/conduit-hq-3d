@@ -284,6 +284,7 @@ async function init() {
   for (let di = 0; di < factoryDepts.length; di++) {
     const dept = factoryDepts[di];
     const result = await createDepartmentFloor(scene, {
+      id: dept.id,
       floorY: dept.y,
       name: dept.name,
       accentColor: dept.accentColor,

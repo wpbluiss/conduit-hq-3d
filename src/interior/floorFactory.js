@@ -6,6 +6,7 @@ import { createAgentModel } from '../npc/agentModel.js';
 import { createCharacterInstance, isCharacterModelAvailable } from '../npc/characterLoader.js';
 import { createWalkingNpcs, updateWalkingNpcs } from '../npc/walkingNpc.js';
 import { createSpeechBubbles } from '../npc/speechBubble.js';
+import { createDoorSign } from '../ui/doorSign.js';
 
 const FLOOR_W = LOBBY.width;
 const FLOOR_D = LOBBY.depth;
@@ -221,7 +222,7 @@ const DEPT_SCREENS = {
  * Returns: { group, mixers, screenCanvases, screenTextures, robotGroups, robotBaseY, robotPhaseOffsets }
  */
 export async function createDepartmentFloor(scene, config) {
-  const { floorY, name, accentColor, agents, extras } = config;
+  const { id: deptId, floorY, name, accentColor, agents, extras } = config;
   const group = new THREE.Group();
   const hw = FLOOR_W / 2;
   const hd = FLOOR_D / 2;
@@ -460,6 +461,11 @@ export async function createDepartmentFloor(scene, config) {
   indMesh.position.set(0, floorY + frameH + 0.3, doorZ + 0.04);
   group.add(indMesh);
   console.log('[FIX] Elevator doors rebuilt with dual panels + brushed metal + floor number');
+
+  // --- Department door sign (beside elevator) ---
+  if (deptId) {
+    createDoorSign(deptId, floorY, accentColor, group, { x: 3.2, z: doorZ + 0.06 });
+  }
 
   // --- Baseboards ---
   const bbMat = new THREE.MeshStandardMaterial({ color: 0x0f0f18, roughness: 0.5 });

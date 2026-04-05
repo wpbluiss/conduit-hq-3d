@@ -1,6 +1,7 @@
 import * as THREE from 'three/webgpu';
 import { LOBBY } from '../constants.js';
 import { loadModel } from '../utils/modelLoader.js';
+import { createDoorSign } from '../ui/doorSign.js';
 
 function createNameTagWithStatus(name, status, borderColor = '#8b5cf6') {
   const canvas = document.createElement('canvas');
@@ -776,6 +777,9 @@ export async function createCeoSuite(scene) {
   );
   indMesh2.position.set(0, FLOOR_Y + efH + 0.3, -hd + 0.16);
   group.add(indMesh2);
+
+  // Department door sign
+  createDoorSign('ceo', FLOOR_Y, 0x8b5cf6, group, { x: 3.2, z: -hd + 0.16 });
 
   // ===== #20: EXIT SIGNS =====
   createExitSign(group, -hw + 1, FLOOR_Y + CEIL_H - 0.3, -hd + 1, 0);

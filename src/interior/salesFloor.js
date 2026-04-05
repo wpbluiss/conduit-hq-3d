@@ -6,6 +6,7 @@ import { createAgentModel } from '../npc/agentModel.js';
 import { createCharacterInstance, isCharacterModelAvailable } from '../npc/characterLoader.js';
 import { createWalkingNpcs, updateWalkingNpcs } from '../npc/walkingNpc.js';
 import { createSpeechBubbles } from '../npc/speechBubble.js';
+import { createDoorSign } from '../ui/doorSign.js';
 
 const FLOOR_Y = 50;
 const FLOOR_W = LOBBY.width;
@@ -838,6 +839,9 @@ export async function createSalesFloor(scene) {
   );
   indMesh.position.set(0, FLOOR_Y + frameH + 0.3, -hd + 0.16);
   group.add(indMesh);
+
+  // Department door sign
+  createDoorSign('sales', FLOOR_Y, 0x3b82f6, group, { x: 3.2, z: -hd + 0.16 });
 
   // ===== QUOTA THERMOMETER on left wall =====
   const thermoCanvas = document.createElement('canvas');

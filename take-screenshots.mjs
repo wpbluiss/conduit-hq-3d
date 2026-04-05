@@ -4,36 +4,32 @@ import path from 'path';
 
 const SHOTS = [
   {
-    name: 'lobby-dashboard',
-    desc: 'Lobby with company dashboard screen',
-    cam: { x: -2, y: 4, z: 0 },
-    target: { x: 0, y: 5.5, z: -6.5 },
-    floor: 0,
-    wait: 4000,
+    name: 'sales-door-sign',
+    desc: 'Sales floor with illuminated department sign',
+    cam: { x: 4, y: 52.5, z: -4.5 },
+    target: { x: 3.2, y: 52.8, z: -7.8 },
+    floor: 50,
   },
   {
-    name: 'ceo-boardroom',
-    desc: 'CEO Suite board room area',
-    cam: { x: 3, y: 402, z: 8 },
-    target: { x: 6, y: 401, z: 4 },
+    name: 'engineering-door-sign',
+    desc: 'Engineering floor door sign',
+    cam: { x: 4, y: 152.5, z: -4.5 },
+    target: { x: 3.2, y: 152.8, z: -7.8 },
+    floor: 150,
+  },
+  {
+    name: 'ceo-door-sign',
+    desc: 'CEO Suite door sign',
+    cam: { x: 4, y: 402.5, z: -4.5 },
+    target: { x: 3.2, y: 402.8, z: -7.8 },
     floor: 400,
-    wait: 4000,
   },
   {
-    name: 'ceo-dashboard',
-    desc: 'CEO Suite with dashboard screen',
-    cam: { x: -5, y: 402, z: 3 },
-    target: { x: -8, y: 402.5, z: 0 },
-    floor: 400,
-    wait: 4000,
-  },
-  {
-    name: 'notifications-lobby',
-    desc: 'Lobby interior showing notification toast',
-    cam: { x: 0, y: 3, z: 5 },
-    target: { x: 0, y: 2, z: -3 },
-    floor: 0,
-    wait: 5000,
+    name: 'monitoring-door-sign',
+    desc: 'Monitoring floor sign with server racks',
+    cam: { x: 4, y: 352.5, z: -4.5 },
+    target: { x: 3.2, y: 352.8, z: -7.8 },
+    floor: 350,
   },
 ];
 
@@ -55,7 +51,6 @@ async function run() {
   const page = await browser.newPage();
   await page.setViewport({ width: 1920, height: 1080 });
 
-  // Log console messages for debugging
   page.on('console', msg => {
     if (msg.type() === 'error') console.log('PAGE ERROR:', msg.text());
   });
@@ -63,25 +58,15 @@ async function run() {
   console.log('Loading page...');
   await page.goto('http://localhost:5174/', { waitUntil: 'networkidle0', timeout: 60000 });
 
-  // Wait for scene ready with longer timeout
   try {
     await page.waitForFunction('window.__SCENE_READY === true', { timeout: 45000 });
     console.log('Scene ready');
   } catch (e) {
-    console.log('Scene not ready after 45s, checking state...');
-    const state = await page.evaluate(() => ({
-      ready: window.__SCENE_READY,
-      hasRenderer: !!window.__renderer,
-    }));
-    console.log('State:', state);
-    if (!state.ready) {
-      console.error('Scene failed to load');
-      await browser.close();
-      process.exit(1);
-    }
+    console.error('Scene failed to load');
+    await browser.close();
+    process.exit(1);
   }
 
-  // Extra wait for animations to settle
   await new Promise(r => setTimeout(r, 3000));
 
   for (const shot of SHOTS) {
@@ -94,7 +79,7 @@ async function run() {
       );
     }, shot);
 
-    await new Promise(r => setTimeout(r, shot.wait));
+    await new Promise(r => setTimeout(r, 4000));
 
     await page.screenshot({
       path: path.join(outDir, `${shot.name}.png`),

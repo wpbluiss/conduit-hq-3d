@@ -113,6 +113,11 @@ export function createVoiceMic() {
     isOpen = true;
     overlay.style.display = 'flex';
     drawWaveform();
+    console.log(
+      '%c[ELEVENLABS HOOK] READY FOR ELEVENLABS: would send audio to wss://api.elevenlabs.io/v1/text-to-speech/{voice_id}/stream',
+      'color: #8b5cf6; font-weight: bold'
+    );
+    console.log('[ELEVENLABS HOOK] Integration point: capture mic via navigator.mediaDevices.getUserMedia(), stream PCM to ElevenLabs WebSocket, play back TTS response');
   }
 
   function hide() {
