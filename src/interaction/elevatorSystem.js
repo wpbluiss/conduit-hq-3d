@@ -226,5 +226,5 @@ export function createElevatorSystem(player, controls, elevatorPanel, promptOver
     _onEKeyCallback = cb;
   }
 
-  return { setNearElevator, isNearElevator, onFloorChange, onEKey };
+  return { setNearElevator, isNearElevator, onFloorChange, onEKey, teleportToFloor };
 }

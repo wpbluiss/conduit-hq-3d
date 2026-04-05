@@ -48,6 +48,8 @@ import { createFloorTitle, FLOOR_DISPLAY } from './ui/floorTitle.js';
 import { createBoardMeeting } from './ui/boardMeeting.js';
 import { createNotifications } from './ui/notifications.js';
 import { createCompanyDashboard } from './ui/companyDashboard.js';
+import { createReceptionPanel } from './ui/receptionPanel.js';
+import { createOutdoor } from './world/outdoor.js';
 // Bloom PP disabled — MRT incompatible with three.js r183 WebGPU
 // import { createPostProcessing } from './scene/postprocessing.js';
 
@@ -57,10 +59,12 @@ import { updateAgentAnimation as _updateReceptionist } from './npc/agentAnimator
 import { preloadCharacterModel } from './npc/characterLoader.js';
 
 const loadBar = document.getElementById('load-bar');
+const loadPct = document.getElementById('load-pct');
 const loadingScreen = document.getElementById('loading');
 
 function setProgress(pct) {
   if (loadBar) loadBar.style.width = pct + '%';
+  if (loadPct) loadPct.textContent = Math.round(pct) + '%';
 }
 
 async function init() {
@@ -139,7 +143,9 @@ async function init() {
   setProgress(52);
 
   createPalms(scene);
-  setProgress(56);
+  setProgress(54);
+
+  setProgress(55);
 
   // Restore scene.add and reparent captured objects under exteriorGroup
   scene.add = origAdd;
@@ -148,6 +154,9 @@ async function init() {
     exteriorGroup.add(obj);
   }
   scene.add(exteriorGroup);
+
+  // Outdoor environment (cars, fountain, street lights, bench, fog)
+  const outdoor = createOutdoor(exteriorGroup);
 
   // --- Interior (lobby) — wrap in group for hiding on upper floors ---
   const lobbyInteriorGroup = new THREE.Group();
@@ -323,6 +332,9 @@ async function init() {
   const floorTitle = createFloorTitle();
   const boardMeeting = createBoardMeeting(ceoResult.group);
   const notifications = createNotifications();
+  const receptionPanel = createReceptionPanel((floor) => {
+    elevator.teleportToFloor(floor);
+  });
 
   // --- Company Dashboard Screens ---
   const dashboards = [];
@@ -509,17 +521,18 @@ async function init() {
   }
 
   // --- Proximity zones ---
-  let greetingShown = false;
+  let nearReceptionist = false;
   proximity.addZone({
     position: receptionist.position,
     radius: NPC.greetDistance,
     id: 'receptionist',
     onEnter: () => {
-      promptOverlay.show('Welcome to Conduit AI, Mr. Garcia.');
-      greetingShown = true;
+      nearReceptionist = true;
+      promptOverlay.show('Welcome to Conduit AI. Press E to check in');
     },
     onExit: () => {
-      if (greetingShown) { promptOverlay.hide(); greetingShown = false; }
+      nearReceptionist = false;
+      if (!elevator.isNearElevator()) promptOverlay.hide();
     },
   });
 
@@ -643,15 +656,23 @@ async function init() {
     },
   });
 
-  // --- E key handler for agents and CEO desk (when NOT near elevator) ---
+  // --- E key handler for agents, CEO desk, and receptionist (when NOT near elevator) ---
   elevator.onEKey(() => {
     // This fires when E is pressed but NOT near elevator
+    if (receptionPanel.isOpen()) {
+      receptionPanel.close();
+      return;
+    }
     if (agentCard.isOpen()) {
       agentCard.hide();
       return;
     }
     if (ceoDashboard.isOpen()) {
       ceoDashboard.hide();
+      return;
+    }
+    if (nearReceptionist && currentFloorY <= 0) {
+      receptionPanel.open();
       return;
     }
     if (nearCeoDesk && currentFloorY === 400) {
@@ -861,6 +882,11 @@ async function init() {
 
     if (signMat && exteriorGroup.visible) {
       signMat.emissiveIntensity = 0.5 + 1.5 * (0.5 + 0.5 * Math.sin(elapsedTime * 1.2));
+    }
+
+    // Outdoor environment (fountain spray, fog drift)
+    if (exteriorGroup.visible) {
+      outdoor.update(elapsedTime);
     }
 
     // Board meeting animation (CEO floor only)
