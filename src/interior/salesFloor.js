@@ -207,7 +207,7 @@ export async function createSalesFloor(scene) {
   const hd = FLOOR_D / 2;
 
   // Floor
-  const floorMat = new THREE.MeshPhysicalMaterial({ color: 0x1a1a2e, roughness: 0.25, metalness: 0.08, clearcoat: 0.6, clearcoatRoughness: 0.15, envMapIntensity: 1.8, transparent: false });
+  const floorMat = new THREE.MeshPhysicalMaterial({ color: 0x1a1a2e, roughness: 0.25, metalness: 0.08, clearcoat: 0.6, clearcoatRoughness: 0.15, envMapIntensity: 0.3, transparent: false });
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(FLOOR_W + 1, FLOOR_D + 1), floorMat);
   floor.rotation.x = -Math.PI / 2;
   floor.position.y = FLOOR_Y;
@@ -1019,6 +1019,29 @@ export async function createSalesFloor(scene) {
   // --- Walking NPCs (2 on sales floor) ---
   salesWalkingNpcs = createWalkingNpcs(group, FLOOR_Y, 2, 0x3b82f6);
   salesSpeechBubbles = createSpeechBubbles(npcGroups, 'Sales');
+
+  // --- Glass Partitions ---
+  const glassMat = new THREE.MeshPhysicalMaterial({
+    color: 0xddeeff, transparent: true, opacity: 0.06,
+    roughness: 0.05, metalness: 0.0,
+    envMapIntensity: 0.3,
+    side: THREE.DoubleSide,
+  });
+  const glassFrameMat = new THREE.MeshStandardMaterial({
+    color: 0x888899, metalness: 0.8, roughness: 0.2,
+  });
+  // Center divider
+  const centerGlass = new THREE.Mesh(new THREE.PlaneGeometry(6, 2.5), glassMat);
+  centerGlass.position.set(0, FLOOR_Y + 1.5, 0);
+  group.add(centerGlass);
+  const centerTop = new THREE.Mesh(new THREE.BoxGeometry(6.1, 0.03, 0.03), glassFrameMat);
+  centerTop.position.set(0, FLOOR_Y + 2.75, 0);
+  group.add(centerTop);
+  for (const px of [-3, 0, 3]) {
+    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 2.5, 6), glassFrameMat);
+    post.position.set(px, FLOOR_Y + 1.5, 0);
+    group.add(post);
+  }
 
   scene.add(group);
 

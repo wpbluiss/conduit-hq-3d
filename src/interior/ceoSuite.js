@@ -1143,6 +1143,201 @@ export async function createCeoSuite(scene) {
     group.add(tag);
   }
 
+  // ==========================================================
+  // BOARD MEETING ROOM (right-front zone, X: +3 to +9, Z: +1 to +7)
+  // ==========================================================
+  {
+  const boardGroup = new THREE.Group();
+  boardGroup.name = 'boardRoom';
+
+  const boardX = 6, boardZ = 4;
+
+  // Glass partition walls (L-shape enclosure)
+  const boardGlassMat = new THREE.MeshPhysicalMaterial({
+    color: 0xddeeff, transparent: true, opacity: 0.1,
+    roughness: 0.02, metalness: 0.0,
+    clearcoat: 1.0, clearcoatRoughness: 0.05,
+    side: THREE.DoubleSide,
+  });
+  const boardFrameMat = new THREE.MeshStandardMaterial({
+    color: 0x888899, metalness: 0.8, roughness: 0.2,
+  });
+
+  // Left wall (X=3, facing inward)
+  const leftWall = new THREE.Mesh(new THREE.PlaneGeometry(6, 3.5), boardGlassMat);
+  leftWall.position.set(3, FLOOR_Y + 2, boardZ);
+  leftWall.rotation.y = Math.PI / 2;
+  boardGroup.add(leftWall);
+  // Frame posts
+  for (const pz of [1, 4, 7]) {
+    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 3.5, 6), boardFrameMat);
+    post.position.set(3, FLOOR_Y + 2, pz);
+    boardGroup.add(post);
+  }
+  // Top frame
+  const leftTop = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.03, 6.1), boardFrameMat);
+  leftTop.position.set(3, FLOOR_Y + 3.75, boardZ);
+  boardGroup.add(leftTop);
+
+  // Back wall (Z=1, facing forward) — partial, leaves doorway
+  const boardBackWall = new THREE.Mesh(new THREE.PlaneGeometry(3, 3.5), boardGlassMat);
+  boardBackWall.position.set(7.5, FLOOR_Y + 2, 1);
+  boardGroup.add(boardBackWall);
+
+  // Conference table (oval-ish — elongated capsule top)
+  const tableMat = new THREE.MeshPhysicalMaterial({
+    color: 0x1a1210, roughness: 0.25, metalness: 0.15,
+    clearcoat: 0.6, clearcoatRoughness: 0.1,
+  });
+  // Table top
+  const tableTop = new THREE.Mesh(
+    new THREE.CylinderGeometry(1.6, 1.6, 0.06, 16), tableMat
+  );
+  tableTop.position.set(boardX, FLOOR_Y + 0.78, boardZ);
+  tableTop.scale.set(1, 1, 0.6);
+  boardGroup.add(tableTop);
+  // Table edge trim
+  const tableEdge = new THREE.Mesh(
+    new THREE.TorusGeometry(1.6, 0.02, 4, 24), tableMat
+  );
+  tableEdge.position.set(boardX, FLOOR_Y + 0.78, boardZ);
+  tableEdge.rotation.x = Math.PI / 2;
+  tableEdge.scale.set(1, 0.6, 1);
+  boardGroup.add(tableEdge);
+  // Table legs (4 corners)
+  const tableLegMat = new THREE.MeshStandardMaterial({ color: 0x333344, metalness: 0.6, roughness: 0.3 });
+  for (const [lx, lz] of [[-1, -0.6], [1, -0.6], [-1, 0.6], [1, 0.6]]) {
+    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.04, 0.75, 6), tableLegMat);
+    leg.position.set(boardX + lx, FLOOR_Y + 0.38, boardZ + lz);
+    boardGroup.add(leg);
+  }
+
+  // Chairs around table (8 chairs)
+  const chairMat = new THREE.MeshPhysicalMaterial({
+    color: 0x1a1a2e, roughness: 0.5, metalness: 0.05,
+    clearcoat: 0.15,
+  });
+  const chairPositions = [
+    { x: -1.3, z: 0, ry: Math.PI / 2 },
+    { x: 1.3, z: 0, ry: -Math.PI / 2 },
+    { x: -0.8, z: -0.85, ry: 0 },
+    { x: 0, z: -0.85, ry: 0 },
+    { x: 0.8, z: -0.85, ry: 0 },
+    { x: -0.8, z: 0.85, ry: Math.PI },
+    { x: 0, z: 0.85, ry: Math.PI },
+    { x: 0.8, z: 0.85, ry: Math.PI },
+  ];
+
+  for (const cp of chairPositions) {
+    const cg = new THREE.Group();
+    // Seat
+    const seat = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.06, 0.4), chairMat);
+    seat.position.y = 0.45;
+    cg.add(seat);
+    // Back
+    const back = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.05), chairMat);
+    back.position.set(0, 0.72, -0.17);
+    cg.add(back);
+    // Legs (5-star base)
+    const baseMat = new THREE.MeshStandardMaterial({ color: 0x333344, metalness: 0.6, roughness: 0.3 });
+    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.4, 6), baseMat);
+    pole.position.y = 0.22;
+    cg.add(pole);
+    for (let ai = 0; ai < 5; ai++) {
+      const a = (ai / 5) * Math.PI * 2;
+      const armMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.01, 0.2, 4), baseMat);
+      armMesh.rotation.z = Math.PI / 2;
+      armMesh.position.set(Math.cos(a) * 0.1, 0.03, Math.sin(a) * 0.1);
+      armMesh.rotation.y = a;
+      cg.add(armMesh);
+    }
+
+    cg.position.set(boardX + cp.x, FLOOR_Y, boardZ + cp.z);
+    cg.rotation.y = cp.ry;
+    boardGroup.add(cg);
+  }
+
+  // Board meeting display screen
+  const boardScreenCanvas = document.createElement('canvas');
+  boardScreenCanvas.width = 512;
+  boardScreenCanvas.height = 256;
+  const bsctx = boardScreenCanvas.getContext('2d');
+  bsctx.fillStyle = '#080810';
+  bsctx.fillRect(0, 0, 512, 256);
+  // Logo gradient
+  const bsGrad = bsctx.createLinearGradient(100, 0, 412, 0);
+  bsGrad.addColorStop(0, '#8b5cf6');
+  bsGrad.addColorStop(1, '#06b6d4');
+  bsctx.fillStyle = bsGrad;
+  bsctx.font = 'bold 36px "Segoe UI", system-ui, sans-serif';
+  bsctx.textAlign = 'center';
+  bsctx.fillText('CONDUIT AI', 256, 100);
+  bsctx.fillStyle = '#94a3b8';
+  bsctx.font = '22px "Segoe UI", system-ui, sans-serif';
+  bsctx.fillText('Board Meeting', 256, 145);
+  // Divider
+  bsctx.strokeStyle = '#8b5cf6';
+  bsctx.lineWidth = 1;
+  bsctx.beginPath();
+  bsctx.moveTo(150, 170);
+  bsctx.lineTo(362, 170);
+  bsctx.stroke();
+  // Status text
+  bsctx.fillStyle = '#64748b';
+  bsctx.font = '16px monospace';
+  bsctx.fillText('Q2 2026 — Strategic Review', 256, 200);
+
+  const boardScreenTex = new THREE.CanvasTexture(boardScreenCanvas);
+  boardScreenTex.colorSpace = THREE.SRGBColorSpace;
+  const boardScreen = new THREE.Mesh(
+    new THREE.PlaneGeometry(2.0, 1.0),
+    new THREE.MeshStandardMaterial({
+      map: boardScreenTex,
+      emissive: new THREE.Color(0x8b5cf6),
+      emissiveIntensity: 1.5,
+      toneMapped: false,
+    })
+  );
+  boardScreen.position.set(boardX, FLOOR_Y + 2.5, 1.05);
+  boardGroup.add(boardScreen);
+
+  // Screen bezel
+  const bezelMat = new THREE.MeshStandardMaterial({ color: 0x111118, metalness: 0.5, roughness: 0.3 });
+  const bezel = new THREE.Mesh(new THREE.BoxGeometry(2.1, 1.1, 0.04), bezelMat);
+  bezel.position.set(boardX, FLOOR_Y + 2.5, 1.03);
+  boardGroup.add(bezel);
+
+  // Screen glow light
+  const screenGlow = new THREE.PointLight(0x8b5cf6, 5, 6);
+  screenGlow.position.set(boardX, FLOOR_Y + 2.5, 1.5);
+  boardGroup.add(screenGlow);
+
+  // "BOARD ROOM" sign on glass
+  const brSignCanvas = document.createElement('canvas');
+  brSignCanvas.width = 256;
+  brSignCanvas.height = 48;
+  const brctx = brSignCanvas.getContext('2d');
+  brctx.clearRect(0, 0, 256, 48);
+  brctx.fillStyle = 'rgba(10,11,16,0.6)';
+  brctx.beginPath();
+  brctx.roundRect(8, 6, 240, 36, 8);
+  brctx.fill();
+  brctx.fillStyle = '#8b5cf6';
+  brctx.font = '500 18px sans-serif';
+  brctx.textAlign = 'center';
+  brctx.fillText('BOARD ROOM', 128, 30);
+  const brSignTex = new THREE.CanvasTexture(brSignCanvas);
+  brSignTex.colorSpace = THREE.SRGBColorSpace;
+  const brSign = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: brSignTex, transparent: true,
+  }));
+  brSign.scale.set(1.5, 0.28, 1);
+  brSign.position.set(3.1, FLOOR_Y + 3.2, boardZ);
+  boardGroup.add(brSign);
+
+  group.add(boardGroup);
+  } // end board room scope
+
   scene.add(group);
   return { group, jarvisPosition, jarvisMixer };
 }

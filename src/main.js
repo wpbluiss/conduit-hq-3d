@@ -94,7 +94,7 @@ async function init() {
   scene.add(baselineAmbient);
 
   // --- Build the world ---
-  createSky(scene);
+  const { updateSky } = createSky(scene);
   setProgress(10);
 
   createLighting(scene);
@@ -388,13 +388,14 @@ async function init() {
     updateFloorName(floorNameMap[floorY] || `Floor — Unknown`);
 
     const isLobby = (floorY <= 0);
-    const isCeo = (floorY === 400); // CEO has glass walls, show skyline
+    const isCeo = (floorY === 400);
 
-    // Hide/show exterior + lobby based on current floor
+    // Exterior (tower, ground, palms) only on lobby and CEO
+    // Skyline buildings visible from ALL floors (city view through windows)
     exteriorGroup.visible = isLobby || isCeo;
     exteriorGroup.traverse(c => { c.visible = exteriorGroup.visible; });
-    skylineGroup.visible = isLobby || isCeo;
-    skylineGroup.traverse(c => { c.visible = skylineGroup.visible; });
+    skylineGroup.visible = true;
+    skylineGroup.traverse(c => { c.visible = true; });
     lobbyInteriorGroup.visible = isLobby;
     lobbyInteriorGroup.traverse(c => { c.visible = lobbyInteriorGroup.visible; });
 
@@ -797,6 +798,9 @@ async function init() {
     }
 
     // 5c: Conduit AI sign glow pulsing (only when exterior visible)
+    // Update sky (clouds, aircraft)
+    updateSky(elapsedTime, delta);
+
     if (signMat && exteriorGroup.visible) {
       signMat.emissiveIntensity = 0.5 + 1.5 * (0.5 + 0.5 * Math.sin(elapsedTime * 1.2));
     }

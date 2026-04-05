@@ -242,7 +242,7 @@ export async function createDepartmentFloor(scene, config) {
   // --- Floor (solid, department-tinted) ---
   const floorMat = new THREE.MeshPhysicalMaterial({
     color: theme.floorTint, roughness: 0.25, metalness: 0.08,
-    clearcoat: 0.6, clearcoatRoughness: 0.15, envMapIntensity: 1.8, transparent: false,
+    clearcoat: 0.4, clearcoatRoughness: 0.2, envMapIntensity: 0.3, transparent: false,
   });
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(FLOOR_W + 1, FLOOR_D + 1), floorMat);
   floor.rotation.x = -Math.PI / 2;
@@ -1345,6 +1345,64 @@ export async function createDepartmentFloor(scene, config) {
   // Run extras callback if provided
   if (extras) {
     extras(group, floorY, CEIL_H, hw, hd);
+  }
+
+  // --- Glass Partitions (modern office aesthetic) ---
+  const glassMat = new THREE.MeshPhysicalMaterial({
+    color: 0xddeeff, transparent: true, opacity: 0.06,
+    roughness: 0.05, metalness: 0.0,
+    envMapIntensity: 0.3,
+    side: THREE.DoubleSide,
+  });
+  const glassFrameMat = new THREE.MeshStandardMaterial({
+    color: 0x888899, metalness: 0.8, roughness: 0.2,
+  });
+
+  // Partition between desk rows (center divider)
+  const centerPartition = new THREE.Mesh(
+    new THREE.PlaneGeometry(6, 2.5), glassMat
+  );
+  centerPartition.position.set(0, floorY + 1.5, 0);
+  group.add(centerPartition);
+  // Frame top
+  const centerFrame = new THREE.Mesh(
+    new THREE.BoxGeometry(6.1, 0.03, 0.03), glassFrameMat
+  );
+  centerFrame.position.set(0, floorY + 2.75, 0);
+  group.add(centerFrame);
+  // Frame posts
+  for (const px of [-3, 0, 3]) {
+    const post = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.015, 0.015, 2.5, 6), glassFrameMat
+    );
+    post.position.set(px, floorY + 1.5, 0);
+    group.add(post);
+  }
+
+  // Side partitions (near walls, creating office pods)
+  for (const side of [-1, 1]) {
+    const sidePartition = new THREE.Mesh(
+      new THREE.PlaneGeometry(2.5, 2.2), glassMat
+    );
+    sidePartition.position.set(side * 4, floorY + 1.35, 0);
+    sidePartition.rotation.y = Math.PI / 2;
+    group.add(sidePartition);
+    // Frame
+    const sideFrame = new THREE.Mesh(
+      new THREE.BoxGeometry(0.03, 2.2, 0.03), glassFrameMat
+    );
+    sideFrame.position.set(side * 4, floorY + 1.35, -1.25);
+    group.add(sideFrame);
+    const sideFrame2 = new THREE.Mesh(
+      new THREE.BoxGeometry(0.03, 2.2, 0.03), glassFrameMat
+    );
+    sideFrame2.position.set(side * 4, floorY + 1.35, 1.25);
+    group.add(sideFrame2);
+    const sideTop = new THREE.Mesh(
+      new THREE.BoxGeometry(0.03, 0.03, 2.6), glassFrameMat
+    );
+    sideTop.position.set(side * 4, floorY + 2.45, 0);
+    group.add(sideTop);
   }
 
   // --- Walking NPCs (2 per floor) ---
