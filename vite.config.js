@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [apiProxies()],
-  server: { port: 3000 },
+  server: { port: 5173 },
   root: '.',
   publicDir: 'public',
 });

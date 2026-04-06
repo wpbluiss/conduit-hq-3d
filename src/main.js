@@ -50,8 +50,9 @@ import { createNotifications } from './ui/notifications.js';
 import { createCompanyDashboard } from './ui/companyDashboard.js';
 import { createReceptionPanel } from './ui/receptionPanel.js';
 import { createOutdoor } from './world/outdoor.js';
-// Bloom PP disabled — MRT incompatible with three.js r183 WebGPU
-// import { createPostProcessing } from './scene/postprocessing.js';
+import { createPostProcessing } from './scene/postprocessing.js';
+import { createDustParticles, createVolumetricFog, createScreenFlicker } from './scene/atmospherics.js';
+import { createHoverOutline, markInteractable } from './interaction/hoverOutline.js';
 
 // Stage 8 -- Live data integration
 import { setCurrentFloor, getAgentTask } from './data/liveAgentStatus.js';
@@ -73,7 +74,7 @@ async function init() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.5;
+  renderer.toneMappingExposure = 1.2;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -93,11 +94,11 @@ async function init() {
   const scene = new THREE.Scene();
   window.__scene = scene;
   scene.background = new THREE.Color(0x87ceeb); // fallback blue sky until HDR loads
-  scene.fog = new THREE.FogExp2(0x997766, 0.0008); // warm golden fog, lighter for better visibility
+  scene.fog = new THREE.FogExp2(0x887766, 0.001); // warm golden-brown fog, moody atmosphere
   const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
 
   // Baseline warm ambient so objects are ALWAYS visible
-  const baselineAmbient = new THREE.AmbientLight(0xfff5e8, 1.4);
+  const baselineAmbient = new THREE.AmbientLight(0xfff5e8, 1.0);
   scene.add(baselineAmbient);
 
   // --- Build the world ---
@@ -191,6 +192,10 @@ async function init() {
   setProgress(78);
 
   const receptionist = await createReceptionist(scene);
+  // Mark receptionist as interactable for hover outline
+  if (receptionist.group) {
+    markInteractable(receptionist.group, 'Press E to check in');
+  }
   setProgress(82);
 
   // --- Lobby floating light motes (particles) — brighter, more magical ---
@@ -247,6 +252,44 @@ async function init() {
   // Player (async -- loads 3D model)
   const player = await createPlayer(scene);
   const controls = createControls(camera, player, renderer.domElement);
+
+  // --- Post-processing pipeline (bloom, GTAO, outline, film grain) ---
+  let ppEnabled = true;
+  let ppChain = null;
+  try {
+    ppChain = createPostProcessing(renderer, scene, camera);
+    console.log('[PP] Post-processing pipeline created: bloom + GTAO + outline + film grain');
+  } catch (e) {
+    console.warn('[PP] Post-processing failed, falling back to direct render:', e);
+    ppEnabled = false;
+  }
+
+  // --- Screen flicker system ---
+  const screenFlicker = createScreenFlicker();
+
+  // --- Lobby atmospheric effects ---
+  const lobbyDust = createDustParticles(lobbyInteriorGroup, {
+    count: 50,
+    spread: { x: 18, y: 6, z: 12 },
+    baseY: 0.3,
+    color: 0xffeedd,
+    size: 0.03,
+    opacity: 0.3,
+  });
+  const lobbyFog = createVolumetricFog(lobbyInteriorGroup, {
+    layers: 3,
+    width: 18,
+    height: 6,
+    depth: 14,
+    color: 0x998877,
+    opacity: 0.015,
+    baseY: 0,
+  });
+
+  // --- Hover outline system ---
+  const hoverOutline = ppChain
+    ? createHoverOutline(camera, scene, ppChain.selectedObjects, promptOverlay)
+    : null;
 
   setProgress(86);
 
@@ -900,8 +943,26 @@ async function init() {
       dash.update(elapsedTime);
     }
 
-    // Render (bloom PP disabled — MRT incompatibility with WebGPU r183)
-    renderer.renderAsync(scene, camera);
+    // Update lobby atmospheric effects (only when visible)
+    if (lobbyInteriorGroup.visible) {
+      lobbyDust.update(elapsedTime);
+      lobbyFog.update(elapsedTime);
+    }
+
+    // Screen flicker
+    screenFlicker.update(elapsedTime);
+
+    // Hover outline detection (only when pointer is locked)
+    if (hoverOutline) {
+      hoverOutline.update(elapsedTime);
+    }
+
+    // Render with post-processing pipeline (bloom + GTAO + outline + film grain)
+    if (ppEnabled && ppChain) {
+      ppChain.postProcessing.renderAsync();
+    } else {
+      renderer.renderAsync(scene, camera);
+    }
 
     frameCount++;
     const now = performance.now();

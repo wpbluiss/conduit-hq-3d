@@ -7,6 +7,8 @@ import { createCharacterInstance, isCharacterModelAvailable } from '../npc/chara
 import { createWalkingNpcs, updateWalkingNpcs } from '../npc/walkingNpc.js';
 import { createSpeechBubbles } from '../npc/speechBubble.js';
 import { createDoorSign } from '../ui/doorSign.js';
+import { createDustParticles, createVolumetricFog, createEmberParticles } from '../scene/atmospherics.js';
+import { markInteractable } from '../interaction/hoverOutline.js';
 
 const FLOOR_W = LOBBY.width;
 const FLOOR_D = LOBBY.depth;
@@ -240,10 +242,12 @@ export async function createDepartmentFloor(scene, config) {
     fillLight: { color: accentColor, intensity: 8, y: 1.5 },
   };
 
-  // --- Floor (solid, department-tinted) ---
+  // --- Floor (polished concrete / dark reflective surface) ---
   const floorMat = new THREE.MeshPhysicalMaterial({
-    color: theme.floorTint, roughness: 0.25, metalness: 0.08,
-    clearcoat: 0.4, clearcoatRoughness: 0.2, envMapIntensity: 0.3, transparent: false,
+    color: theme.floorTint, roughness: 0.15, metalness: 0.12,
+    clearcoat: 0.7, clearcoatRoughness: 0.1,
+    envMapIntensity: 0.6, transparent: false,
+    reflectivity: 0.8,
   });
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(FLOOR_W + 1, FLOOR_D + 1), floorMat);
   floor.rotation.x = -Math.PI / 2;
@@ -1434,7 +1438,51 @@ export async function createDepartmentFloor(scene, config) {
     }
   }
 
+  // --- Atmospheric effects: dust particles + volumetric fog ---
+  const dustSystem = createDustParticles(group, {
+    count: 40,
+    spread: { x: FLOOR_W - 2, y: CEIL_H - 0.5, z: FLOOR_D - 2 },
+    baseY: floorY + 0.3,
+    color: name === 'Monitoring' ? 0xff6644 : (name === 'Engineering' ? 0xffaa66 : 0xddeeff),
+    size: 0.035,
+    opacity: 0.35,
+  });
+
+  const fogSystem = createVolumetricFog(group, {
+    layers: 3,
+    width: FLOOR_W - 2,
+    height: CEIL_H - 1,
+    depth: FLOOR_D - 2,
+    color: name === 'Monitoring' ? 0x442222 : (name === 'Engineering' ? 0x332211 : 0x222233),
+    opacity: 0.018,
+    baseY: floorY,
+  });
+
+  // Engineering + Monitoring get ember particles (server room feel)
+  let emberSystem = null;
+  if (name === 'Engineering' || name === 'Monitoring') {
+    emberSystem = createEmberParticles(group, {
+      count: 15,
+      spread: { x: 8, y: 2.5, z: 6 },
+      baseY: floorY,
+      color: name === 'Monitoring' ? 0xff3322 : 0xff8844,
+      size: 0.025,
+    });
+  }
+
+  // --- Mark desks as interactable for hover outline ---
+  group.traverse(child => {
+    if (child.isMesh && child.geometry === deskGeo) {
+      markInteractable(child, 'Press E to inspect agent');
+    }
+  });
+
   function updateFloor(time, playerPos) {
+    // Atmospheric updates
+    dustSystem.update(time);
+    fogSystem.update(time);
+    if (emberSystem) emberSystem.update(time);
+
     // Update screens every ~3 seconds for alive feeling
     if (time - screenTimer > 3) {
       screenTimer = time;
