@@ -1,73 +1,47 @@
 import * as THREE from 'three/webgpu';
-import { pass, mrt, output, normalView, uniform, vec4 } from 'three/tsl';
+import { pass } from 'three/tsl';
 import { bloom } from 'three/addons/tsl/display/BloomNode.js';
-import { ao } from 'three/addons/tsl/display/GTAONode.js';
 import { outline } from 'three/addons/tsl/display/OutlineNode.js';
 import { film } from 'three/addons/tsl/display/FilmNode.js';
 
 /**
- * Full post-processing pipeline for Conduit HQ.
- * Bloom + GTAO + Outline (hover) + Film grain + Vignette
+ * Post-processing pipeline for Conduit HQ.
+ * Bloom + Outline (hover) + Film grain.
+ * No MRT — avoids WebGPU r183 MRT incompatibility.
+ * Uses RenderPipeline (PostProcessing is deprecated alias).
  */
 export function createPostProcessing(renderer, scene, camera) {
-  const postProcessing = new THREE.PostProcessing(renderer);
+  const pipeline = new THREE.RenderPipeline(renderer);
 
-  // --- Scene pass with MRT for GTAO (depth + normals) ---
+  // --- Scene pass (no MRT — avoids WebGPU compatibility issues) ---
   const scenePass = pass(scene, camera);
-  scenePass.setMRT(mrt({
-    output: output,
-    normal: normalView,
-  }));
-
   const scenePassColor = scenePass.getTextureNode('output');
-  const scenePassNormal = scenePass.getTextureNode('normal');
-  const scenePassDepth = scenePass.getTextureNode('depth');
 
   // --- Bloom: subtle glow on emissive surfaces (signs, LEDs, screens) ---
-  const bloomPass = bloom(scenePassColor, 0.35, 0.4, 0.85);
-
-  // --- GTAO: ambient occlusion for depth and contact shadows ---
-  const aoPass = ao(scenePassDepth, scenePassNormal, camera);
-  aoPass.distanceExponent = 1.0;
-  aoPass.distanceFallOff = 0.4;
-  aoPass.radius.value = 0.25;
-  aoPass.scale.value = 1.0;
-  aoPass.thickness.value = 1.0;
+  const bloomPass = bloom(scenePassColor, 0.4, 0.5, 0.8);
 
   // --- Outline pass for hover interaction highlights ---
   const selectedObjects = [];
-  const edgeStrength = uniform(3.0);
-  const edgeGlow = uniform(0.0);
-  const edgeThickness = uniform(1.5);
-  const visibleEdgeColor = uniform(new THREE.Color(0xffffff));
-  const hiddenEdgeColor = uniform(new THREE.Color(0x333333));
 
   const outlinePass = outline(scene, camera, {
     selectedObjects,
-    edgeGlow,
-    edgeThickness,
+    edgeThickness: 1.5,
+    edgeGlow: 0.0,
   });
 
   const { visibleEdge, hiddenEdge } = outlinePass;
-  const outlineColor = visibleEdge.mul(visibleEdgeColor).add(
-    hiddenEdge.mul(hiddenEdgeColor)
-  ).mul(edgeStrength);
+  const outlineColor = visibleEdge.mul(3.0).add(hiddenEdge.mul(0.5));
+
+  // --- Compose: scene + bloom + outline ---
+  const composed = scenePassColor.add(bloomPass).add(outlineColor);
 
   // --- Film grain: subtle noise for cinematic feel ---
-  // Apply bloom + AO first, then grain on top
-  const litScene = aoPass.getTextureNode().mul(scenePassColor.add(bloomPass));
-  const withOutline = litScene.add(outlineColor);
-  const finalColor = film(withOutline, 0.06);
+  const finalColor = film(composed, 0.05);
 
-  postProcessing.outputNode = finalColor;
+  pipeline.outputNode = finalColor;
 
   return {
-    postProcessing,
+    pipeline,           // call pipeline.render() in the loop
     selectedObjects,    // mutate this array to highlight objects
-    edgeStrength,
-    visibleEdgeColor,
-    hiddenEdgeColor,
-    edgeThickness,
-    edgeGlow,
   };
 }

@@ -286,10 +286,8 @@ async function init() {
     baseY: 0,
   });
 
-  // --- Hover outline system ---
-  const hoverOutline = ppChain
-    ? createHoverOutline(camera, scene, ppChain.selectedObjects, promptOverlay)
-    : null;
+  // Hover outline created later (after promptOverlay is declared)
+  let hoverOutline = null;
 
   setProgress(86);
 
@@ -361,6 +359,11 @@ async function init() {
   const elevatorPanel = createElevatorPanel();
   const proximity = createProximitySystem(player);
   const elevator = createElevatorSystem(player, controls, elevatorPanel, promptOverlay, { openDoors, closeDoors });
+
+  // --- Hover outline system (needs promptOverlay, so created here) ---
+  if (ppChain) {
+    hoverOutline = createHoverOutline(camera, scene, ppChain.selectedObjects, promptOverlay);
+  }
 
   // --- UI Overlays ---
   const jarvisChat = createJarvisChat();
@@ -957,9 +960,9 @@ async function init() {
       hoverOutline.update(elapsedTime);
     }
 
-    // Render with post-processing pipeline (bloom + GTAO + outline + film grain)
+    // Render with post-processing pipeline (bloom + outline + film grain)
     if (ppEnabled && ppChain) {
-      ppChain.postProcessing.renderAsync();
+      ppChain.pipeline.render();
     } else {
       renderer.renderAsync(scene, camera);
     }
