@@ -18,7 +18,8 @@ export function createPostProcessing(renderer, scene, camera) {
   const scenePassColor = scenePass.getTextureNode('output');
 
   // --- Bloom: subtle glow on emissive surfaces (signs, LEDs, screens) ---
-  const bloomPass = bloom(scenePassColor, 0.4, 0.5, 0.8);
+  // Keep it subtle — crisp visuals, not washed-out haze
+  const bloomPass = bloom(scenePassColor, 0.15, 0.3, 0.9);
 
   // --- Outline pass for hover interaction highlights ---
   const selectedObjects = [];
@@ -35,8 +36,8 @@ export function createPostProcessing(renderer, scene, camera) {
   // --- Compose: scene + bloom + outline ---
   const composed = scenePassColor.add(bloomPass).add(outlineColor);
 
-  // --- Film grain: subtle noise for cinematic feel ---
-  const finalColor = film(composed, 0.05);
+  // --- Film grain: very subtle noise for cinematic feel ---
+  const finalColor = film(composed, 0.03);
 
   pipeline.outputNode = finalColor;
 

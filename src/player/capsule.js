@@ -24,50 +24,7 @@ export async function createPlayer(scene) {
     group.add(shadow);
   }
 
-  // 1. Try Soldier model first (rigged with animations)
-  if (!modelLoaded) {
-    try {
-      const { scene: model, animations } = await loadModel('/models/soldier.glb');
-      model.scale.setScalar(1.0);
-      model.rotation.y = Math.PI;
-
-      // Recolor soldier to look like a professional CEO
-      model.traverse((child) => {
-        if (child.isMesh) {
-          child.castShadow = true;
-          child.receiveShadow = true;
-          if (child.material) {
-            child.material = child.material.clone();
-            const meshName = (child.name || '').toLowerCase();
-            if (meshName.includes('head') || meshName.includes('hand') || meshName.includes('face')) {
-              child.material.color.set(0xc68642);
-            } else if (meshName.includes('hair')) {
-              child.material.color.set(0x1a1a1a);
-            } else {
-              child.material.color.set(0x0f0f20);
-            }
-          }
-        }
-      });
-
-      group.add(model);
-      addShadow();
-
-      const anim = setupAnimations(model, animations);
-      mixer = anim.mixer;
-      actions = anim.actions;
-      if (actions['Idle']) {
-        actions['Idle'].play();
-        currentAction = 'Idle';
-      }
-      modelLoaded = true;
-      console.log('[FIX] Player: Soldier recolored as CEO (black suit, skin tone)');
-    } catch (e) {
-      console.warn('Soldier model failed:', e);
-    }
-  }
-
-  // 2. Premium procedural CEO character
+  // Professional CEO character (procedural — clean business person)
   if (!modelLoaded) {
     const charGroup = new THREE.Group();
 

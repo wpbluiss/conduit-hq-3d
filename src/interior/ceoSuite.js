@@ -289,36 +289,31 @@ export async function createCeoSuite(scene) {
     group.add(mullion);
   }
 
-  // Lighting — Executive suite: dramatic warm amber + purple accent for premium feel
-  const mainLight = new THREE.PointLight(0xffe0b0, 55, 24, 2);
+  // Lighting — Executive suite: moody warm + subtle purple accent (NOT overbright)
+  const mainLight = new THREE.PointLight(0xffe0b0, 30, 22, 2);
   mainLight.position.set(0, FLOOR_Y + CEIL_H - 0.5, 0);
   mainLight.castShadow = true;
   mainLight.shadow.mapSize.set(512, 512);
   mainLight.shadow.radius = 4;
   group.add(mainLight);
 
-  const accentLight = new THREE.PointLight(0x8b5cf6, 28, 16, 2);
+  const accentLight = new THREE.PointLight(0x8b5cf6, 12, 14, 2);
   accentLight.position.set(4, FLOOR_Y + CEIL_H - 1, -4);
   group.add(accentLight);
 
-  const ambientFloor = new THREE.PointLight(0xfff0dd, 32, 20, 2);
+  const ambientFloor = new THREE.PointLight(0xfff0dd, 15, 18, 2);
   ambientFloor.position.set(-3, FLOOR_Y + 2, 2);
   group.add(ambientFloor);
 
   // Warm back-wall wash for depth
-  const backWash = new THREE.PointLight(0xffe8c0, 14, 12, 2);
+  const backWash = new THREE.PointLight(0xffe8c0, 6, 10, 2);
   backWash.position.set(0, FLOOR_Y + 1.5, -6);
   group.add(backWash);
 
-  // Purple floor-level ambiance — stronger for premium feel
-  const floorPurple = new THREE.PointLight(0x8b5cf6, 10, 10, 2);
+  // Purple floor-level ambiance — subtle
+  const floorPurple = new THREE.PointLight(0x8b5cf6, 4, 8, 2);
   floorPurple.position.set(0, FLOOR_Y + 0.3, 0);
   group.add(floorPurple);
-
-  // Extra accent: warm golden window wash from front
-  const windowWash = new THREE.PointLight(0xffcc88, 12, 14, 2);
-  windowWash.position.set(0, FLOOR_Y + 2.5, 7);
-  group.add(windowWash);
 
   // Executive desk
   const deskMat = new THREE.MeshStandardMaterial({ color: 0x2a1a0a, roughness: 0.4, metalness: 0.1 });
@@ -352,21 +347,22 @@ export async function createCeoSuite(scene) {
   plateMesh.rotation.x = -0.3;
   group.add(plateMesh);
 
-  // ===== CEO DASHBOARD MONITORS (3 screens on desk) =====
+  // ===== CEO DASHBOARD MONITORS (3 screens on desk, facing CEO chair at z=-4.2) =====
   const ceoScreenCanvases = [];
   const ceoScreenTextures = [];
   const monitorPositions = [
-    { x: -1.2, label: 'WORKFORCE' },
-    { x: 0, label: 'OVERVIEW' },
-    { x: 1.2, label: 'PIPELINE' },
+    { x: -1.2, label: 'WORKFORCE', angle: 0.25 },
+    { x: 0, label: 'OVERVIEW', angle: 0 },
+    { x: 1.2, label: 'PIPELINE', angle: -0.25 },
   ];
   for (const mp of monitorPositions) {
-    // Monitor housing
+    // Monitor housing — on far side of desk, screens face toward chair (+Z direction)
     const monHousing = new THREE.Mesh(
       new THREE.BoxGeometry(1.0, 0.65, 0.05),
       new THREE.MeshStandardMaterial({ color: 0x111118, roughness: 0.3, metalness: 0.5 })
     );
-    monHousing.position.set(mp.x, FLOOR_Y + 1.3, -3.5);
+    monHousing.position.set(mp.x, FLOOR_Y + 1.3, -2.5);
+    monHousing.rotation.y = mp.angle;
     group.add(monHousing);
 
     // Screen canvas
@@ -379,9 +375,14 @@ export async function createCeoSuite(scene) {
     ceoScreenTextures.push(tex);
     const screenMesh = new THREE.Mesh(
       new THREE.PlaneGeometry(0.9, 0.55),
-      new THREE.MeshBasicMaterial({ map: tex, side: THREE.DoubleSide })
+      new THREE.MeshStandardMaterial({
+        map: tex, emissive: 0xffffff, emissiveMap: tex,
+        emissiveIntensity: 1.5, toneMapped: false,
+      })
     );
-    screenMesh.position.set(mp.x, FLOOR_Y + 1.3, -3.474);
+    // Screen faces +Z (toward chair) — flip with Math.PI
+    screenMesh.position.set(mp.x, FLOOR_Y + 1.3, -2.474);
+    screenMesh.rotation.y = Math.PI + mp.angle;
     group.add(screenMesh);
   }
   // Render CEO screen content
@@ -489,33 +490,7 @@ export async function createCeoSuite(scene) {
   lampShade.rotation.x = Math.PI;
   group.add(lampShade);
 
-  // ===== #11: MULTIPLE MONITORS (3 screens) =====
-  const monitorMat = new THREE.MeshStandardMaterial({ color: 0x111122, roughness: 0.2, metalness: 0.5 });
-  const screenColors = [0x8b5cf6, 0x3b82f6, 0x10b981]; // purple, blue, green
-  const monitorAngles = [-0.3, 0, 0.3]; // slight angle outward
-  const monitorXPositions = [-1.1, 0, 1.1];
-
-  for (let mi = 0; mi < 3; mi++) {
-    const monitor = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.6, 0.04), monitorMat);
-    monitor.position.set(monitorXPositions[mi], FLOOR_Y + 1.3, -3.5);
-    monitor.rotation.y = monitorAngles[mi];
-    group.add(monitor);
-
-    const screenMat = new THREE.MeshStandardMaterial({
-      color: screenColors[mi],
-      emissive: screenColors[mi], emissiveIntensity: 3.0,
-      toneMapped: false,
-    });
-    const screen = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.5), screenMat);
-    screen.position.set(monitorXPositions[mi], FLOOR_Y + 1.3, -3.55);
-    screen.rotation.y = monitorAngles[mi];
-    group.add(screen);
-
-    // Screen glow light
-    const screenGlow = new THREE.PointLight(screenColors[mi], 5, 4, 2);
-    screenGlow.position.set(monitorXPositions[mi], FLOOR_Y + 1.3, -3.2);
-    group.add(screenGlow);
-  }
+  // (Monitors already created as CEO dashboard screens above — no duplicate needed)
 
   // Chair behind desk
   const chairMat = new THREE.MeshStandardMaterial({ color: 0x1a1a2e, roughness: 0.5 });
@@ -840,19 +815,19 @@ export async function createCeoSuite(scene) {
     new THREE.PlaneGeometry(3.2, 1.6),
     new THREE.MeshStandardMaterial({
       map: tvTex, emissive: 0xffffff, emissiveMap: tvTex,
-      emissiveIntensity: 2.5, toneMapped: false,
+      emissiveIntensity: 1.5, toneMapped: false,
     })
   );
   tvScreen.rotation.y = -Math.PI / 2;
   tvScreen.position.set(hw - 0.28, FLOOR_Y + 2.5, 2);
   group.add(tvScreen);
-  // TV purple glow
-  const tvSpot = new THREE.PointLight(0x8b5cf6, 10, 6, 2);
+  // TV purple glow — subtle
+  const tvSpot = new THREE.PointLight(0x8b5cf6, 4, 5, 2);
   tvSpot.position.set(hw - 0.5, FLOOR_Y + 2.5, 2);
   group.add(tvSpot);
 
-  // ===== Ceiling light panels =====
-  const ceilPanelMat = new THREE.MeshBasicMaterial({ color: 0xfff5e0 });
+  // ===== Ceiling light panels (dimmed — not glowing white) =====
+  const ceilPanelMat = new THREE.MeshStandardMaterial({ color: 0xddd8c8, emissive: 0xfff5e0, emissiveIntensity: 0.3 });
   const ceilPanelGeo = new THREE.PlaneGeometry(2, 1.5);
   [[-4, -3], [4, -3], [-4, 3], [4, 3]].forEach(([px, pz]) => {
     const panel = new THREE.Mesh(ceilPanelGeo, ceilPanelMat);

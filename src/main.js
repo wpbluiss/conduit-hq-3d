@@ -94,7 +94,7 @@ async function init() {
   const scene = new THREE.Scene();
   window.__scene = scene;
   scene.background = new THREE.Color(0x87ceeb); // fallback blue sky until HDR loads
-  scene.fog = new THREE.FogExp2(0x887766, 0.001); // warm golden-brown fog, moody atmosphere
+  scene.fog = new THREE.FogExp2(0x887766, 0.0005); // subtle warm haze — crisp, not cloudy
   const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
 
   // Baseline warm ambient so objects are ALWAYS visible
@@ -267,22 +267,22 @@ async function init() {
   // --- Screen flicker system ---
   const screenFlicker = createScreenFlicker();
 
-  // --- Lobby atmospheric effects ---
+  // --- Lobby atmospheric effects (subtle — not hazy) ---
   const lobbyDust = createDustParticles(lobbyInteriorGroup, {
-    count: 50,
+    count: 25,
     spread: { x: 18, y: 6, z: 12 },
     baseY: 0.3,
     color: 0xffeedd,
-    size: 0.03,
-    opacity: 0.3,
+    size: 0.025,
+    opacity: 0.2,
   });
   const lobbyFog = createVolumetricFog(lobbyInteriorGroup, {
-    layers: 3,
+    layers: 2,
     width: 18,
     height: 6,
     depth: 14,
     color: 0x998877,
-    opacity: 0.015,
+    opacity: 0.008,
     baseY: 0,
   });
 

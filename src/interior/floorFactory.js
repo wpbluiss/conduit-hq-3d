@@ -634,7 +634,7 @@ export async function createDepartmentFloor(scene, config) {
       new THREE.PlaneGeometry(0.7, 0.4),
       new THREE.MeshStandardMaterial({
         map: screenTex, side: THREE.DoubleSide,
-        emissive: 0xffffff, emissiveMap: screenTex, emissiveIntensity: 2.5,
+        emissive: 0xffffff, emissiveMap: screenTex, emissiveIntensity: 1.2,
         toneMapped: false,
       })
     );
@@ -1438,23 +1438,23 @@ export async function createDepartmentFloor(scene, config) {
     }
   }
 
-  // --- Atmospheric effects: dust particles + volumetric fog ---
+  // --- Atmospheric effects: subtle dust + minimal fog ---
   const dustSystem = createDustParticles(group, {
-    count: 40,
+    count: 20,
     spread: { x: FLOOR_W - 2, y: CEIL_H - 0.5, z: FLOOR_D - 2 },
     baseY: floorY + 0.3,
     color: name === 'Monitoring' ? 0xff6644 : (name === 'Engineering' ? 0xffaa66 : 0xddeeff),
-    size: 0.035,
-    opacity: 0.35,
+    size: 0.025,
+    opacity: 0.2,
   });
 
   const fogSystem = createVolumetricFog(group, {
-    layers: 3,
+    layers: 2,
     width: FLOOR_W - 2,
     height: CEIL_H - 1,
     depth: FLOOR_D - 2,
     color: name === 'Monitoring' ? 0x442222 : (name === 'Engineering' ? 0x332211 : 0x222233),
-    opacity: 0.018,
+    opacity: 0.008,
     baseY: floorY,
   });
 
@@ -1462,11 +1462,11 @@ export async function createDepartmentFloor(scene, config) {
   let emberSystem = null;
   if (name === 'Engineering' || name === 'Monitoring') {
     emberSystem = createEmberParticles(group, {
-      count: 15,
+      count: 10,
       spread: { x: 8, y: 2.5, z: 6 },
       baseY: floorY,
       color: name === 'Monitoring' ? 0xff3322 : 0xff8844,
-      size: 0.025,
+      size: 0.02,
     });
   }
 
